@@ -22,9 +22,11 @@ pipeline {
         }
         stage('K8s Local Deploy') {
             steps {
-                bat 'kubectl apply -f k8s-local.yaml'
-                bat 'kubectl rollout restart deployment food-app'
-            }
-        }
+        // Replace <YOUR_WINDOWS_USER> with your actual PC username
+            bat 'kubectl --kubeconfig=C:/Users/batch1/.kube/config apply -f k8s-local.yaml'
+            bat 'kubectl --kubeconfig=C:/Users/batch1/.kube/config rollout restart deployment food-app'
+    }
+}
+
     }
 }
