@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: food-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: food-delivery
+  template:
+    metadata:
+      labels:
+        app: food-delivery
+    spec:
+      containers:
+      - name: food-container
+        image: food-delivery:local
+        imagePullPolicy: Never # Forces K8s to use your local image
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: food-service
+spec:
+  type: NodePort
+  selector:
+    app: food-delivery
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30001
