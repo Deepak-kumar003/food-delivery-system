@@ -1,40 +1,29 @@
 pipeline {
     agent any
-    
-    tools {
-        maven 'M3' // Ensure this matches the name in Jenkins Global Tool Config
-    }
-
+    tools { maven 'M3' }
     stages {
-        stage('Checkout') {
+        stage('Unit Testing') {
             steps {
-                git branch: 'main', url: 'https://github.com'
+                // Runs JUnit tests automatically
+                sh 'mvn test'
             }
         }
-
-        stage('Build & Test') {
+        stage('Package Application') {
             steps {
-                // Runs Maven clean package which executes JUnit tests automatically
-                sh 'mvn clean package'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                }
+                sh 'mvn clean package -DskipTests'
             }
         }
-
-        stage('Docker Build') {
+        stage('Docker Image Build') {
             steps {
-                // Builds the image locally
+                // Builds image on your local Docker Desktop
                 sh 'docker build -t food-delivery:local .'
             }
         }
-
-        stage('K8s Deployment') {
+        stage('K8s Local Deploy') {
             steps {
-                // Deploys to your local Kubernetes (Minikube/Docker Desktop)
+                // Updates your local K8s cluster
                 sh 'kubectl apply -f k8s-local.yaml'
+                sh 'kubectl rollout restart deployment food-app'
             }
         }
     }
