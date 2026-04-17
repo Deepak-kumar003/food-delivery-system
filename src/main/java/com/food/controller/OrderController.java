@@ -8,8 +8,10 @@ public class OrderController {
     private final OrderService service;
     public OrderController(OrderService service) { this.service = service; }
 
-    @PostMapping("/{id}")
+    // Changed from @PostMapping to @GetMapping
+    @GetMapping("/{id}") 
     public String createOrder(@PathVariable String id) {
         return service.placeOrder(id);
     }
 }
+
